@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Simple HTTP server to serve DZI tiles locally
 Run this script and then open http://localhost:8000/viewer.html
@@ -37,25 +36,21 @@ def start_server():
         print("Error: viewer.html file not found!")
         return
     
-    print(f"🚀 Starting HTTP server on port {PORT}...")
-    print(f"📁 Serving files from: {script_dir}")
-    print(f"🌐 Viewer URL: http://localhost:{PORT}/viewer.html")
-    print("🔧 Press Ctrl+C to stop the server")
+    print(f"Starting HTTP server on port {PORT}...")
+    print(f"Serving files from: {script_dir}")
+    print(f"Viewer URL: http://localhost:{PORT}/viewer.html")
+    print("Press Ctrl+C to stop the server")
     print("-" * 50)
     
     try:
         with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
-            # Open browser automatically
             webbrowser.open(f'http://localhost:{PORT}/viewer.html')
             
-            print(f"✅ Server running at http://localhost:{PORT}/")
-            print("📂 Available files:")
+            print(f"Server running at http://localhost:{PORT}/")
             for file in os.listdir('.'):
                 if os.path.isfile(file):
                     print(f"   - {file}")
             print("-" * 50)
-            
-            # Start serving
             httpd.serve_forever()
             
     except KeyboardInterrupt:

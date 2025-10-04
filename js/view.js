@@ -1,12 +1,10 @@
         let viewer;
 
-        // Initialize OpenSeadragon viewer
         document.addEventListener('DOMContentLoaded', function() {
             viewer = OpenSeadragon({
                 id: 'openseadragon-viewer',
                 prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@4.1.0/build/openseadragon/images/',
-                tileSources: './img/test.dzi',
-                // Viewer options - NASA mission parameters
+                tileSources: './img/biggest.dzi',
                 animationTime: 1.2,
                 blendTime: 0.3,
                 constrainDuringPan: true,
@@ -20,7 +18,6 @@
                 navigatorBackground: 'rgba(11, 61, 145, 0.8)',
                 navigatorBorderColor: '#64ffda',
                 navigatorDisplayRegionColor: 'rgba(100, 255, 218, 0.3)',
-                // UI customization
                 showHomeControl: false,
                 showZoomControl: false,
                 showFullPageControl: false,
