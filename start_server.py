@@ -1,5 +1,13 @@
 """
-Simple HTTP server to serve DZI tiles locally
+Simple HTTP server to serve DZI t    print(f"🚀 Starting HTTP server on port {PORT}...")
+    print(f"📁 Serving files from: {script_dir}")
+    print(f"🌐 Available Viewers:")
+    print(f"   📷 Gallery View: http://localhost:{PORT}/gallery-viewer.html")
+    print(f"   🎯 Selector View: http://localhost:{PORT}/selector-viewer.html") 
+    print(f"   📑 Tab View: http://localhost:{PORT}/tab-viewer.html")
+    print(f"   📰 Original: http://localhost:{PORT}/viewer.html")
+    print("🔧 Press Ctrl+C to stop the server")
+    print("-" * 50)locally
 Run this script and then open http://localhost:8000/viewer.html
 """
 
@@ -44,7 +52,8 @@ def start_server():
     
     try:
         with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
-            webbrowser.open(f'http://localhost:{PORT}/viewer.html')
+            # Open browser automatically - default to gallery view
+            webbrowser.open(f'http://localhost:{PORT}/gallery-viewer.html')
             
             print(f"Server running at http://localhost:{PORT}/")
             for file in os.listdir('.'):
