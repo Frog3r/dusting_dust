@@ -51,7 +51,7 @@ The demo will now run locally, showing the Local Archive by default.
 You can switch to NASA Database Mode to search live data from NASA’s API.
 
 
-🖼️ Adding Your Own Local Images
+## 🖼️ Adding Your Own Local Images
 
 To add your own Deep Zoom (DZI) images:
 
@@ -60,7 +60,7 @@ Place your .dzi files inside the /img/ folder.
 Add preview thumbnails inside /img/previews/.
 
 Update the imageCatalog array inside index.html:
-
+```js
 {
     id: 'newimage',
     title: 'My Custom Galaxy',
@@ -69,7 +69,7 @@ Update the imageCatalog array inside index.html:
     preview: 'img/previews/mycustomgalaxy.png',
     type: 'local'
 }
-
+```
 
 Refresh your browser — your new image will appear in Local Archive Mode.
 
