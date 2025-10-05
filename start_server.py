@@ -19,10 +19,6 @@ def start_server():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_dir)
     
-    if not os.path.exists('img/test.dzi'):
-        print("Error: test.dzi file not found!")
-        print("Please make sure you have generated the DZI tiles first.")
-        return
     
     if not os.path.exists('viewer.html'):
         print("Error: viewer.html file not found!")
