@@ -4,7 +4,7 @@ An interactive web application that allows users to **explore NASA’s image dat
 
 This project lets you switch between **Local Archive Mode** (using provided images) and **NASA Database Mode** (using NASA’s public Images API).  
 
-You can see a live demo in: dusting-dust-nasa.github.io
+
 
 ---
 
@@ -90,3 +90,6 @@ OpenSeadragon
 
 NASA Image API
  for dynamic searches
+
+
+### You can see a live demo in: https://dusting-dust-nasa.github.io/
