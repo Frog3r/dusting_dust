@@ -521,6 +521,7 @@
                 title: 'Andromeda Galaxy',
                 description: 'M31 - Our nearest galactic neighbor, captured in stunning detail showing spiral arms and stellar formations.',
                 dzi: 'img/andromeda.dzi',
+                preview: 'img/previews/andromeda.png',
                 type: 'local'
             },
             {
@@ -528,6 +529,7 @@
                 title: 'Orion Nebula',
                 description: 'M42 - A stellar nursery where new stars are born, revealing the cosmic dance of gas and dust.',
                 dzi: 'img/orion.dzi',
+                preview: 'img/previews/orion.png',
                 type: 'local'
             },
             {
@@ -535,6 +537,7 @@
                 title: 'Galaxy NGC 1309',
                 description: 'Rich with detail, the spiral galaxy NGC 1309 shines in this NASA/ESA Hubble Space Telescope image.',
                 dzi: 'img/galaxy_NGC1309.dzi',
+                preview: 'img/previews/star1.png',
                 type: 'local'
             },
             {
@@ -542,6 +545,7 @@
                 title: 'Galaxy Sombrero',
                 description: 'The Sombrero galaxy, Messier 104 (M104).',
                 dzi: 'img/sombrero.dzi',
+                preview: 'img/previews/hat.png',
                 type: 'local'
             }
         ];
@@ -709,31 +713,29 @@
         }
 
         function populateGallery() {
-            const grid = document.getElementById('imageGrid');
-            grid.innerHTML = '';
+    const grid = document.getElementById('imageGrid');
+    grid.innerHTML = '';
 
-            imageCatalog.forEach(image => {
-                const card = document.createElement('div');
-                card.className = 'image-card';
-                card.onclick = () => openViewer(image);
+    imageCatalog.forEach(image => {
+        const card = document.createElement('div');
+        card.className = 'image-card';
+        card.onclick = () => openViewer(image);
 
-                card.innerHTML = `
-                    <div class="image-preview">
-                        <div class="preview-placeholder">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
-                            <div>High-Resolution DZI</div>
-                        </div>
-                    </div>
-                    <div class="image-info">
-                        <h3 class="image-title">${image.title}</h3>
-                        <p class="image-description">${image.description}</p>
-                        <button class="view-button">Analyze Image</button>
-                    </div>
-                `;
+        card.innerHTML = `
+            <div class="image-preview">
+                <img src="${image.preview}" alt="${image.title}" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <div class="image-info">
+                <h3 class="image-title">${image.title}</h3>
+                <p class="image-description">${image.description}</p>
+                <button class="view-button">Analyze Image</button>
+            </div>
+        `;
 
-                grid.appendChild(card);
-            });
-        }
+        grid.appendChild(card);
+    });
+}
+
 
         function openViewer(image) {
             document.getElementById('viewerMode').style.display = 'block';
