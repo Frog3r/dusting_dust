@@ -533,13 +533,6 @@
                 type: 'local'
             },
             {
-                id: 'biggest',
-                title: 'Deep Field Survey',
-                description: 'Ultra-deep space observation revealing thousands of distant galaxies across cosmic time.',
-                dzi: 'img/biggest.dzi',
-                type: 'local'
-            },
-            {
                 id: 'test',
                 title: 'Calibration Target',
                 description: 'High-resolution test image for system calibration and performance verification.',
@@ -605,7 +598,7 @@
             `;
         }
 
-        // Search NASA Images API
+        
         async function searchNASAImages(event) {
             event.preventDefault();
             
@@ -620,7 +613,7 @@
                 return;
             }
             
-            // Show loading state
+          
             searchBtn.disabled = true;
             searchBtn.textContent = 'Searching...';
             searchStatus.textContent = 'Scanning NASA database...';
@@ -654,7 +647,7 @@
                 searchStatus.textContent = 'Search failed. Please try again.';
                 searchStatus.className = 'search-status error';
                 
-                // Show error state in grid
+              
                 const grid = document.getElementById('imageGrid');
                 grid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--nasa-red);">
@@ -671,7 +664,7 @@
             }
         }
 
-        // Populate gallery with NASA images
+        
         function populateNASAGallery() {
             const grid = document.getElementById('imageGrid');
             grid.innerHTML = '';
@@ -710,33 +703,100 @@
             });
         }
 
-        function populateGallery() {
-            const grid = document.getElementById('imageGrid');
-            grid.innerHTML = '';
+   
+async function populateGallery() {
+    const grid = document.getElementById('imageGrid');
+    grid.innerHTML = '';
 
-            imageCatalog.forEach(image => {
-                const card = document.createElement('div');
-                card.className = 'image-card';
-                card.onclick = () => openViewer(image);
+    for (const image of imageCatalog) {
+        const card = document.createElement('div');
+        card.className = 'image-card';
+        card.onclick = () => openViewer(image);
 
-                card.innerHTML = `
-                    <div class="image-preview">
-                        <div class="preview-placeholder">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
-                            <div>High-Resolution DZI</div>
-                        </div>
-                    </div>
-                    <div class="image-info">
-                        <h3 class="image-title">${image.title}</h3>
-                        <p class="image-description">${image.description}</p>
-                        <button class="view-button">Analyze Image</button>
-                    </div>
-                `;
+        // Placeholder while preview loads
+        card.innerHTML = `
+            <div class="image-preview">
+                <div class="preview-placeholder">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🌌</div>
+                    <div>Loading preview...</div>
+                </div>
+            </div>
+            <div class="image-info">
+                <h3 class="image-title">${image.title}</h3>
+                <p class="image-description">${image.description}</p>
+                <button class="view-button">Analyze Image</button>
+            </div>
+        `;
+        grid.appendChild(card);
 
-                grid.appendChild(card);
-            });
+       
+        try {
+            const previewUrl = await getDziPreview(image.dzi);
+            const previewContainer = card.querySelector('.image-preview');
+            previewContainer.innerHTML = `
+                <img src="${previewUrl}" 
+                     alt="${image.title}" 
+                     loading="lazy"
+                     style="
+                        width: 100%; 
+                        height: 100%; 
+                        object-fit: cover;
+                        filter: blur(8px) brightness(1.2) saturate(0.9);
+                        transform: scale(1.05);
+                        transition: filter 0.4s ease, transform 0.4s ease;
+                     "
+                     onmouseover="this.style.filter='blur(6px) brightness(1.25) saturate(1)'; this.style.transform='scale(1.06)';"
+                     onmouseout="this.style.filter='blur(8px) brightness(1.2) saturate(0.9)'; this.style.transform='scale(1.05)';"
+                >
+            `;
+        } catch (err) {
+            console.warn(`No preview found for ${image.title}:`, err);
         }
+    }
+}
 
+
+async function getDziPreview(dziPath) {
+    const response = await fetch(dziPath);
+    if (!response.ok) throw new Error(`Cannot load DZI: ${dziPath}`);
+    const xmlText = await response.text();
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+
+    const sizeEl = xmlDoc.querySelector("Size");
+    const imageEl = xmlDoc.querySelector("Image");
+    if (!sizeEl || !imageEl) throw new Error("Invalid DZI format");
+
+    const width = parseInt(sizeEl.getAttribute("Width"));
+    const height = parseInt(sizeEl.getAttribute("Height"));
+    const tileSize = parseInt(imageEl.getAttribute("TileSize")) || 256;
+    const maxDim = Math.max(width, height);
+    const maxLevel = Math.ceil(Math.log2(maxDim));
+
+  
+    const previewLevel = Math.max(2, Math.floor(maxLevel / 2));
+
+    const basePath = dziPath.replace(/\.dzi$/, "");
+    const candidatePaths = [
+        `${basePath}_files/${previewLevel}/0_0.jpeg`,
+        `${basePath}/level${previewLevel}/0_0.jpeg`,
+        `${basePath}/${previewLevel}/0_0.jpeg`
+    ];
+
+    for (const path of candidatePaths) {
+        const res = await fetch(path, { method: "HEAD" });
+        if (res.ok) return path;
+    }
+
+    for (let i = 1; i <= maxLevel; i++) {
+        const path = `${basePath}_files/${i}/0_0.jpeg`;
+        const res = await fetch(path, { method: "HEAD" });
+        if (res.ok) return path;
+    }
+
+    throw new Error("No valid preview tile found");
+}
         function openViewer(image) {
             document.getElementById('viewerMode').style.display = 'block';
             document.getElementById('currentImageTitle').textContent = image.title;
